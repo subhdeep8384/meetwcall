@@ -6,6 +6,11 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
 
+/**
+ * Renders the Home client component that displays a signup form when unauthenticated and a logged-in view with a logout button when authenticated.
+ *
+ * @returns The component's JSX: a signup form (name, email, password inputs and submit button) when no session exists, or a view showing the current user's name and a logout button when a session exists.
+ */
 export default function Home() {
   const { data: session } = authClient.useSession();
   const [name, setName] = useState("")
