@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client"
 import { Spinner } from "@/components/ui/spinner"
+import { toast } from "sonner"
+
 
 
 const formSchema = z.object({
@@ -39,6 +41,7 @@ const formSchema = z.object({
 })
 
 const SignUp = () => {
+
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false);
     const form = useForm({
@@ -50,6 +53,7 @@ const SignUp = () => {
             confirmPassword: ""
         }
     })
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         setError(null)
         try {
@@ -177,6 +181,12 @@ const SignUp = () => {
                                     </div>
                                     <div className="grid grid-col-1 gap-2 md:grid-cols-3">
                                         <Button
+                                            onClick={
+                                                () => {
+                                                    authClient.signIn.social({
+                                                        provider: "google"
+                                                    })
+                                                }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
@@ -185,6 +195,9 @@ const SignUp = () => {
                                             Google
                                         </Button>
                                         <Button
+                                            onClick={() => {
+                                                toast.error("facebook not working yet please choose other methord to sign up")
+                                            }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
@@ -193,6 +206,11 @@ const SignUp = () => {
                                             facebook
                                         </Button>
                                         <Button
+                                            onClick={() => {
+                                                authClient.signIn.social({
+                                                    provider: "github"
+                                                })
+                                            }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
