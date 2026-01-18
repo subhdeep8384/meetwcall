@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
+import Image from "next/image"
 
 
 
@@ -77,6 +78,24 @@ const SignUp = () => {
             setLoading(false)
         }
     }
+    const onSocialSubmit = async (provider: "github" | "google" | "facebook") => {
+        try {
+            setLoading(true)
+            authClient.signIn.social({
+                provider: provider,
+                callbackURL: "/"
+            }, {
+                onSuccess: () => {
+                    setLoading(false)
+                },
+                onError: (error) => {
+                    setError(error.error.message)
+                    setLoading(false)
+                }
+            })
+        } catch (_) { console.log(_) } finally { setLoading(false) }
+
+    }
     const router = useRouter()
     return (
         <div className='flex flex-col gap-6'>
@@ -86,7 +105,7 @@ const SignUp = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col items-center text-center">
-                                    <h1 className="text-2xl font-bold">Welcome to MeetWC
+                                    <h1 className="text-2xl font-bold">Welcome to SekTalks
                                     </h1>
                                     <p className="text-muted-foreground text-balance">
                                         Let&apos;s get started
@@ -182,17 +201,15 @@ const SignUp = () => {
                                     <div className="grid grid-col-1 gap-2 md:grid-cols-3">
                                         <Button
                                             onClick={
-                                                () => {
-                                                    authClient.signIn.social({
-                                                        provider: "google"
-                                                    })
+                                                async () => {
+                                                    await onSocialSubmit("google")
                                                 }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
                                             className="w-full"
                                         >
-                                            Google
+                                            <Image src={"/google.png"} alt={"google"} width={20} height={20} />
                                         </Button>
                                         <Button
                                             onClick={() => {
@@ -203,25 +220,24 @@ const SignUp = () => {
                                             type="button"
                                             className="w-full"
                                         >
-                                            facebook
+                                            <Image src={"/facebook.png"} alt={"facebook"} width={20} height={20} />
                                         </Button>
                                         <Button
-                                            onClick={() => {
-                                                authClient.signIn.social({
-                                                    provider: "github"
-                                                })
-                                            }}
+                                            onClick={
+                                                async () => {
+                                                    await onSocialSubmit("github")
+                                                }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
                                             className="w-full"
                                         >
-                                            Github
+                                            <Image src={"/github.png"} alt={"github"} width={20} height={20} />
                                         </Button>
                                     </div>
 
                                     <div className="flex  gap-1 text-center">
-                                        <p className="text-sm flex text-muted-foreground justify-center">a;ready have an account?</p>
+                                        <p className="text-sm flex text-muted-foreground justify-center">already have an account?</p>
                                         <div
                                             hidden={loading}
                                             className="text-sm  underline 
@@ -246,7 +262,7 @@ const SignUp = () => {
                         />
                         <p
                             className='text-2xl font-semibold text-white'>
-                            MeetWC
+                            SekTalks
                         </p>
                     </div>
                 </CardContent>
