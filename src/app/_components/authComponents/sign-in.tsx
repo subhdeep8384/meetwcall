@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client"
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner"
+import Image from "next/image"
+
 
 
 const formSchema = z.object({
@@ -60,6 +62,17 @@ const SignIn = () => {
             setLoading(false)
         }
     }
+
+    const onSocialSubmit = async (provider: "github" | "google" | "facebook") => {
+        try {
+            setLoading(true)
+            authClient.signIn.social({
+                provider: provider,
+                callbackURL: "/"
+            })
+        } catch (_) { console.log(_) } finally { setLoading(false) }
+
+    }
     const router = useRouter()
     return (
         <div className='flex flex-col gap-6'>
@@ -69,7 +82,7 @@ const SignIn = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col items-center text-center">
-                                    <h1 className="text-2xl font-bold">Welcome to MeetWC
+                                    <h1 className="text-2xl font-bold">Welcome to SekTalks
                                     </h1>
                                     <p className="text-muted-foreground text-balance">
                                         Login to your account
@@ -131,16 +144,14 @@ const SignIn = () => {
                                     <div className="grid grid-col-1 gap-2 md:grid-cols-3">
                                         <Button
                                             onClick={async () => {
-                                                await authClient.signIn.social({
-                                                    provider: "google"
-                                                })
+                                                await onSocialSubmit("google")
                                             }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
                                             className="w-full"
                                         >
-                                            Google
+                                            <Image src={"/google.png"} alt={"google"} width={20} height={20} />
                                         </Button>
                                         <Button
                                             onClick={() => {
@@ -151,20 +162,18 @@ const SignIn = () => {
                                             type="button"
                                             className="w-full"
                                         >
-                                            facebook
+                                            <Image src={"/facebook.png"} alt={"facebook"} width={20} height={20} />
                                         </Button>
                                         <Button
-                                            onClick={() => {
-                                                authClient.signIn.social({
-                                                    provider: "github"
-                                                })
+                                            onClick={async () => {
+                                                await onSocialSubmit("github")
                                             }}
                                             disabled={loading}
                                             variant={"outline"}
                                             type="button"
                                             className="w-full"
                                         >
-                                            Github
+                                            <Image src={"/github.png"} alt={"github"} width={20} height={20} />
                                         </Button>
                                     </div>
 
@@ -193,7 +202,7 @@ const SignIn = () => {
                         />
                         <p
                             className='text-2xl font-semibold text-white'>
-                            MeetWC
+                            SekTalks
                         </p>
                     </div>
                 </CardContent>
