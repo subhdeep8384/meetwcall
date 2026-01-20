@@ -23,7 +23,6 @@ import { Avatar } from "@/components/ui/avatar"
 import { CreditCardIcon, LogOutIcon, SettingsIcon, UserIcon } from "lucide-react"
 import GeneratedAvatar from "./generatedAvatar"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
 
@@ -49,7 +48,6 @@ const DashBoardUserFooterComponent = () => {
         await authClient.signOut({
             fetchOptions: {
                 onSuccess: () => router.push("/sign-in"),
-                onError: () => toast.error("Something went wrong"),
             },
         })
     }
