@@ -129,7 +129,7 @@ const DashBoardUserFooterComponent = () => {
             <DropdownMenuContent
                 side="top"
                 align="start"
-                className="w-56 rounded-xl border border-border/20 bg-sidebar shadow-xl backdrop-blur-md"
+                className="w-56 rounded-xl border border-border/20 bg-sidebar hover:bg-sidebar-hover shadow-xl backdrop-blur-md"
             >
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                     Account
@@ -137,12 +137,12 @@ const DashBoardUserFooterComponent = () => {
 
                 <DropdownMenuItem className="gap-2">
                     <UserIcon className="h-4 w-4" />
-                    Profile
+                    <p className="text-white hover:text-slate-950">Profile</p>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem className="gap-2">
                     <SettingsIcon className="h-4 w-4" />
-                    Billing
+                    <p className="text-white hover:text-slate-950">Billing</p>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
