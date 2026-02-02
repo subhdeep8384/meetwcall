@@ -2,20 +2,28 @@
 import React from "react"
 import { useTRPC } from "@/trpc/client"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { DataTable } from "@/components/data-table/data-table"
+import { columns } from "@/components/data-table/columns"
+import { useAgentsFilters } from "@/hooks/agent/use-agents-flters"
+import AgentViewPagination from "./pagination/agentViewPagination"
 
 const AgentView = () => {
+    const [filters, setFilters] = useAgentsFilters()
     const trpc = useTRPC()
-    const { data } = useSuspenseQuery(
-        trpc.agents.getMany.queryOptions()
+    const inf = useSuspenseQuery(
+        trpc.agents.getMany.queryOptions({
+            ...filters
+        })
     )
-
     return (
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl rounded-lg border bg-background p-4 shadow-sm">
-                <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap  text-sm sm:text-base">
-                    {JSON.stringify(data, null, 2)}
-                </pre>
-            </div>
+        <div className="flex-1 pb-4 px-4 md:px-1 flex-col gap-y-4 sm:overflow-hidden">
+            <DataTable columns={columns} data={inf.data.items} />
+            <AgentViewPagination
+                page={filters.page}
+                // setFilters={setFilters}
+                totalPages={inf.data.totalPages}
+                onPageChange={(page) => setFilters({ page })}
+            />
         </div>
     )
 }

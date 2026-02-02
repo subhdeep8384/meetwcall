@@ -1,4 +1,4 @@
-"use server"
+
 import React, { Suspense } from 'react'
 import AgentView from '../../_components/agentView'
 import { getQueryClient, trpc } from '@/trpc/server'
@@ -8,11 +8,27 @@ import ListAgents from '@/app/_components/listAgents';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { SearchParams } from 'nuqs/server';
+import { loadSearchParams } from '@/hooks/agent/params';
 
-const Agents = async () => {
 
+
+// import { useAgentsFilters } from '@/hooks/agent/use-agents-flters';
+
+interface Props {
+    searchParams: Promise<SearchParams>
+}
+const Agents = async ({
+    searchParams
+}: Props) => {
+    const filters = loadSearchParams(searchParams)
+    // const [filters,] = useAgentsFilters()
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions())
+    void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({
+        // ...filters
+        search: (await filters).search,
+        page: (await filters).page
+    }))
 
     const session = await auth.api.getSession({
         headers: await headers()
