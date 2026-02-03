@@ -5,6 +5,7 @@ import { agentSchema } from "../agentSchema";
 import z from "zod";
 import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { MAX_PAGE_SIZE, PAGE, PAGE_SIZE } from "../../defaults/index"
+import { TRPCError } from "@trpc/server";
 
 // import { TRPCError } from "@trpc/server";
 
@@ -17,7 +18,16 @@ export const agentRouter = createTRPCRouter({
         const [agentData] = await db.select({
             ...getTableColumns(agents),
             meetingCount: sql`1`
-        }).from(agents).where(eq(agents.id, id)).execute();
+        }).from(agents).where(
+            and(
+                eq(agents.id, id),
+                eq(agents.userId, opts.ctx.auth.user.id)
+            ))
+            .execute();
+
+        if (!agentData) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "agent not found" })
+        }
         return agentData;
     }),
 

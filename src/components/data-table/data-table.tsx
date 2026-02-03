@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
                             <TableRow
                                 key={row.id}
                                 onClick={() => onRowClick?.(row.original)}
-                                className="hover:bg-muted/10 cursor-pointer h-20"
+                                className="hover:bg-green-300 cursor-pointer h-20"
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell
