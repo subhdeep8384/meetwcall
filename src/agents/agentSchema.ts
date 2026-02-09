@@ -9,3 +9,9 @@ export const agentSchema = z.object({
     })
 })
 
+export const agentUpdateSchema = agentSchema.extend({
+    id: z.string().min(1, {
+        message: "Id must be at least 1 character"
+    })
+})
+

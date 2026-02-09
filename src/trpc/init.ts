@@ -25,6 +25,7 @@ export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
 export const protectedProcedure = t.middleware(async ({ ctx, next }) => {
+
     const session = await auth.api.getSession({
         headers: await headers()
     });
