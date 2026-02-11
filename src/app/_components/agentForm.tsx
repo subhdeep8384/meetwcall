@@ -22,10 +22,11 @@ import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 
 
+
 interface Props {
     onSucess?: () => void;
     onCancel?: () => void;
-    initialValues?: AgentGetOne;
+    initialValues: AgentGetOne;
 }
 
 
@@ -50,6 +51,23 @@ const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
         }
     }))
 
+    const updateAgent = useMutation(trpc.agents.update.mutationOptions({
+        onSuccess: () => {
+            queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}))
+            queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({
+                id: initialValues.id
+            }))
+            onSucess?.()
+
+            toast.success("Agent updated successfully")
+        },
+
+        onError: (e) => {
+            toast.error(e.message)
+            onCancel?.()
+        }
+    }))
+
     const form = useForm<z.infer<typeof agentSchema>>({
         resolver: zodResolver(agentSchema),
         defaultValues: {
@@ -60,10 +78,13 @@ const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
 
     const isEdit = !!initialValues?.id
 
-    const isPending = createAgent.isPending;
+    const isPending = createAgent.isPending || updateAgent.isPending;
     const onSubmit = (values: z.infer<typeof agentSchema>) => {
         if (isEdit) {
-            console.log("update the afent agent")
+            updateAgent.mutate({
+                ...values,
+                id: initialValues?.id
+            })
         } else {
             createAgent.mutate(values)
         }
