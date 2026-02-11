@@ -58,7 +58,7 @@ const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
                 id: initialValues.id
             }))
             onSucess?.()
-            // router.push("/agents")
+
             toast.success("Agent updated successfully")
         },
 
