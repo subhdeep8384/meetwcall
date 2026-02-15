@@ -6,9 +6,10 @@ import React from 'react'
 const MeetingView = () => {
     const trpc = useTRPC()
     const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({}))
+    console.log(data)
     return (
         <div>
-            {JSON.stringify(data)}
+            TODO : responsive ness
         </div>
     )
 }

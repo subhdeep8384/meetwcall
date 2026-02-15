@@ -25,6 +25,7 @@ import GeneratedAvatar from "./generatedAvatar"
 import { useRouter } from "next/navigation"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 const triggerClasses = `
   mb-3 p-3 w-full rounded-lg
@@ -56,7 +57,9 @@ const DashBoardUserFooterComponent = () => {
         <>
             <Avatar className="h-9 w-9 overflow-hidden">
                 {user.image ? (
-                    <img
+                    <Image
+                        height={12}
+                        width={12}
                         src={user.image}
                         alt={user.name ?? "user"}
                         className="h-full w-full rounded-full object-cover"

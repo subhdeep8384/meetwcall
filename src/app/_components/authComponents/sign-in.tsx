@@ -196,7 +196,9 @@ const SignIn = () => {
                     <div
                         className='bg-radial from-green-700 to-green-700 relative hidden md:flex flex-col gap-y-4 items-center justify-center'
                     >
-                        <img src={'./logo.svg'}
+                        <Image src={'./logo.svg'}
+                            width={200}
+                            height={200}
                             alt='Image'
                             className='w-22 md:w-28'
                         />

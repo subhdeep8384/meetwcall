@@ -26,12 +26,12 @@ import { Spinner } from '@/components/ui/spinner';
 interface Props {
     onSucess?: () => void;
     onCancel?: () => void;
-    initialValues: AgentGetOne;
+    initialValues?: AgentGetOne;
 }
 
 
 const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
-
+    // console.log("initial values are :::::::::::::::::::::::::::::::::::::", initialValues)
     const trpc = useTRPC();
     const queryClient = useQueryClient()
 
@@ -54,9 +54,11 @@ const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
     const updateAgent = useMutation(trpc.agents.update.mutationOptions({
         onSuccess: () => {
             queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}))
-            queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({
-                id: initialValues.id
-            }))
+            if (initialValues?.id) {
+                queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({
+                    id: initialValues?.id
+                }))
+            }
             onSucess?.()
 
             toast.success("Agent updated successfully")
