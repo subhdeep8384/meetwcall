@@ -9,7 +9,7 @@ const MeetingView = () => {
     console.log(data)
     return (
         <div>
-            TODO : responsive ness
+            TODO : helo hjelo helo
         </div>
     )
 }
