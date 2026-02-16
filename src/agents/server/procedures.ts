@@ -63,6 +63,17 @@ export const agentRouter = createTRPCRouter({
         return agentData;
     }),
 
+    getAll: baseProcedure.use(protectedProcedure).query(async ({ ctx, }) => {
+        const agentData = await db.select({
+            ...getTableColumns(agents),
+        }).from(agents).where(
+            eq(agents.userId, ctx.auth.user.id)
+        )
+
+        return agentData;
+    }),
+
+
 
     getMany: baseProcedure.use(protectedProcedure).input(z.object({
         page: z.number().default(PAGE),

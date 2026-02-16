@@ -54,6 +54,7 @@ const AgentForm = ({ onSucess, onCancel, initialValues }: Props) => {
     const updateAgent = useMutation(trpc.agents.update.mutationOptions({
         onSuccess: () => {
             queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}))
+            queryClient.invalidateQueries(trpc.agents.getAll.queryOptions())
             if (initialValues?.id) {
                 queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({
                     id: initialValues?.id
