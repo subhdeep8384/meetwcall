@@ -1,5 +1,7 @@
 import React from 'react'
 import ResponsiveDialog from '@/components/dialog'
+import MeetingForm from './meetingForm';
+import { useRouter } from 'next/navigation';
 
 
 interface Props {
@@ -11,13 +13,20 @@ const NewMeetingDialogBox = ({
     open,
     onOpenChange
 }: Props) => {
+    const router = useRouter()
     return (
         <ResponsiveDialog
             title='Create new meeting'
             description='This will create a new meeting'
             open={open} onOpenChange={onOpenChange}
         >
-            TODO : responsive ness
+            <MeetingForm
+                onSucess={(id) => {
+                    onOpenChange(false)
+                    router.push(`/meetings/${id}`)
+                }}
+                onCancel={() => onOpenChange(false)}
+            />
         </ResponsiveDialog>
     )
 }
