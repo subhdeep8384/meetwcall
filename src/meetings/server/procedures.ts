@@ -10,6 +10,7 @@ import { meetingsInsertSchema, meetingsUpdateSchema } from "../meetingSchema";
 
 
 export const meetingsRouter = createTRPCRouter({
+
     update: baseProcedure.use(protectedProcedure).input(meetingsUpdateSchema).mutation(async ({ input, ctx }) => {
         const [updatedMeeting] = await db.update(meetings).set(input).where(
             and(
@@ -33,6 +34,8 @@ export const meetingsRouter = createTRPCRouter({
 
         return createdMeeting;
     }),
+
+
     getOne: baseProcedure.use(protectedProcedure).input(z.object({
         id: z.string()
     })).query(async (opts) => {
@@ -52,7 +55,6 @@ export const meetingsRouter = createTRPCRouter({
         }
         return existingMeeting;
     }),
-
 
     getMany: baseProcedure.use(protectedProcedure).input(z.object({
         page: z.number().default(PAGE),
@@ -84,12 +86,13 @@ export const meetingsRouter = createTRPCRouter({
             ;
         const [total] = await db.select({
             count: count()
-        }).from(meetings).where(
-            and(
-                eq(meetings.userId, ctx.auth.user.id),
-                search ? ilike(meetings.name, `%${search}%`) : undefined
+        }).from(meetings).innerJoin(agents, eq(meetings.agentId, agents.id))
+            .where(
+                and(
+                    eq(meetings.userId, ctx.auth.user.id),
+                    search ? ilike(meetings.name, `%${search}%`) : undefined
+                )
             )
-        )
 
         const totalPages = Math.ceil(total.count / pageSize)
         return {

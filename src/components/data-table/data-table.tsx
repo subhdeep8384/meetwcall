@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
     })
 
     return (
-        <div className="relative w-full max-w-full  ">
+        <div className="relative flex w-full ">
             <Table className="w-full table-fixed">
                 <TableBody>
                     {table.getRowModel().rows.length ? (
@@ -41,12 +41,12 @@ export function DataTable<TData, TValue>({
                             <TableRow
                                 key={row.id}
                                 onClick={() => onRowClick?.(row.original)}
-                                className="hover:bg-green-300 cursor-pointer h-20"
+                                className="hover:bg-green-300 cursor-pointer h-20 w-full justify-end"
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell
                                         key={cell.id}
-                                        className="p-4 text-sm truncate whitespace-nowrap"
+                                        className="p-4 text-sm truncate whitespace-nowrap "
                                     >
                                         {flexRender(
                                             cell.column.columnDef.cell,
