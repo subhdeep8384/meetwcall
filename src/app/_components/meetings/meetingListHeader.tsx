@@ -34,7 +34,7 @@ const MeetingListHeader = () => {
 
             <Button
                 onClick={() => setOpen((value) => !value)}
-                className={cn("sm:hidden", "w-25 h-10")}>
+                className={cn("sm:hidden", "w-25 h-10 mx-7")}>
                 {open ? "show Filters" : "hide Filters"}
             </Button >
 
