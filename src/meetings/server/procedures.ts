@@ -6,6 +6,7 @@ import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { MAX_PAGE_SIZE, PAGE, PAGE_SIZE } from "../../defaults/index"
 import { TRPCError } from "@trpc/server";
 import { meetingsInsertSchema, meetingsUpdateSchema } from "../meetingSchema";
+import { MeetingStatus } from "@/types/type";
 
 
 
@@ -59,12 +60,22 @@ export const meetingsRouter = createTRPCRouter({
     getMany: baseProcedure.use(protectedProcedure).input(z.object({
         page: z.number().default(PAGE),
         pageSize: z.number().min(1).max(MAX_PAGE_SIZE).default(PAGE_SIZE),
-        search: z.string().nullish()
+        search: z.string().nullish(),
+        agentId: z.string().nullish(),
+        status: z.enum([
+            MeetingStatus.Upcomming,
+            MeetingStatus.Active,
+            MeetingStatus.Completed,
+            MeetingStatus.Processing,
+            MeetingStatus.Cancelled
+        ]).nullish(),
     })).query(async ({ ctx, input }) => {
         const {
             search,
             page,
-            pageSize
+            pageSize,
+            status,
+            agentId
         } = input;
 
         const agentData = await db.select(
@@ -78,7 +89,9 @@ export const meetingsRouter = createTRPCRouter({
             .where(
                 and(
                     eq(meetings.userId, ctx.auth.user.id),
-                    search ? ilike(meetings.name, `%${search}%`) : undefined
+                    search ? ilike(meetings.name, `%${search}%`) : undefined,
+                    status ? eq(meetings.status, status) : undefined,
+                    agentId ? eq(meetings.agentId, agentId) : undefined
                 )
             ).orderBy(
                 desc(meetings.createdAt), desc(meetings.id)
@@ -90,7 +103,9 @@ export const meetingsRouter = createTRPCRouter({
             .where(
                 and(
                     eq(meetings.userId, ctx.auth.user.id),
-                    search ? ilike(meetings.name, `%${search}%`) : undefined
+                    search ? ilike(meetings.name, `%${search}%`) : undefined,
+                    status ? eq(meetings.status, status) : undefined,
+                    agentId ? eq(meetings.agentId, agentId) : undefined
                 )
             )
 

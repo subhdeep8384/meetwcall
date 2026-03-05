@@ -1,9 +1,10 @@
 
 import { PAGE } from "@/defaults"
+import { MeetingStatus } from "@/types/type"
 import {
     parseAsInteger,
     parseAsString,
-    // useQueryState,
+    parseAsStringEnum,
     useQueryStates
 } from "nuqs"
 
@@ -14,6 +15,10 @@ export const useMeetingFilter = () => {
             clearOnDefault: true
         }),
         page: parseAsInteger.withDefault(PAGE).withOptions({
+            clearOnDefault: true
+        }),
+        status: parseAsStringEnum(Object.values(MeetingStatus)),
+        agentId: parseAsString.withDefault("").withOptions({
             clearOnDefault: true
         })
     })

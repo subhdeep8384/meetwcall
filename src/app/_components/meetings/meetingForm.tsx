@@ -39,7 +39,6 @@ const MeetingForm = ({ onSucess, onCancel, initialValues }: Props) => {
     const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false)
     const agents = useQuery(trpc.agents.getAll.queryOptions())
 
-    // console.log("agents are :::::", agents)
     const createMeeting = useMutation(trpc.meetings.create.mutationOptions({
         onSuccess: (data) => {
             queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}))
@@ -47,7 +46,7 @@ const MeetingForm = ({ onSucess, onCancel, initialValues }: Props) => {
                 queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues?.id }))
             }
             onSucess?.(data.id)
-            toast.success("Agent created successfully")
+            toast.success("Meeting created successfully")
         },
 
         onError: (e) => {

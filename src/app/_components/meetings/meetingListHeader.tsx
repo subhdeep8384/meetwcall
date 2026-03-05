@@ -3,10 +3,15 @@ import { Button } from '@/components/ui/button'
 import { PlusIcon, } from 'lucide-react'
 import NewMeetingDialogBox from './newMeetingDialogBox'
 import { useState } from 'react'
+import MeetingSearchFilter from './meetingSearchFilter'
+import { StatusFilter } from './statusFilter'
+import { AgentIdFilter } from './agentIdFilter'
+import { useMeetingFilter } from '@/hooks/meeting/use-meeting-filter'
 
 
 const MeetingListHeader = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [, setFilters] = useMeetingFilter()
     return (
         <>
             <NewMeetingDialogBox
@@ -23,11 +28,26 @@ const MeetingListHeader = () => {
                         Create new meeting
                     </Button>
                 </div>
+            </div>
 
+            <div className='flex gap-12 p-5'>
                 <div className='flex items-center gap-x-2 p-1 '>
-
-
+                    <MeetingSearchFilter />
                 </div>
+                <div className='flex'>
+                    <AgentIdFilter />
+                    <StatusFilter />
+                </div>
+                <Button onClick={() => {
+                    setFilters({
+                        search: "",
+                        agentId: "",
+                        status: undefined,
+                        page: 1
+                    })
+                }}>
+                    clear filters
+                </Button>
             </div>
         </>
     )

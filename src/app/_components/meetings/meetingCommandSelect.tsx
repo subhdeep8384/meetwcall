@@ -1,17 +1,15 @@
-"use client"
 import { ReactNode, useState } from "react";
 import { ChevronsUpDownIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-    CommandEmpty,
+
     CommandInput,
     CommandItem,
     CommandResponsiveDialog,
     CommandList
 } from "@/components/ui/command"
-import { FormDescription } from "@/components/ui/form";
 
 
 
@@ -27,19 +25,16 @@ interface Props {
     placeholder?: string;
     isSearchable?: boolean;
     className?: string;
-    setOpenNewAgentDialog?: (open: boolean) => void
 }
 
-export const CommandSelect = ({
+export const MeetingCommandSelect = ({
     options,
     onSelect,
     onSearch,
     value,
     placeholder = "Select an option ",
-    setOpenNewAgentDialog,
     className
 }: Props) => {
-
     const [open, setOpen] = useState(false)
     const selectedOption = options.find(option => option.value === value)
 
@@ -68,23 +63,11 @@ export const CommandSelect = ({
                     placeholder="search..."
                     onValueChange={onSearch}
                 />
+                <Button onClick={() => onSelect("")} variant={"outline"} className='text-sm'>
+                    clear filters
+                </Button>
                 <CommandList>
-                    <CommandEmpty>
-                        <span className="flex flex-col text-muted-foreground text-sm ">
-                            <FormDescription>
-                                No agents ?
-                                <Button
-                                    type='button'
-                                    variant={"ghost"}
-                                    className=' hover:underline'
-                                    onClick={() => setOpenNewAgentDialog?.(true)}
-                                >
-                                    Create new agent
-                                </Button>
 
-                            </FormDescription>
-                        </span>
-                    </CommandEmpty>
 
                     {options.map((option) => (
                         <CommandItem
