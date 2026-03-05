@@ -7,11 +7,13 @@ import MeetingSearchFilter from './meetingSearchFilter'
 import { StatusFilter } from './statusFilter'
 import { AgentIdFilter } from './agentIdFilter'
 import { useMeetingFilter } from '@/hooks/meeting/use-meeting-filter'
+import { cn } from '@/lib/utils'
 
 
 const MeetingListHeader = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [, setFilters] = useMeetingFilter()
+    const [open, setOpen] = useState(true)
     return (
         <>
             <NewMeetingDialogBox
@@ -30,24 +32,42 @@ const MeetingListHeader = () => {
                 </div>
             </div>
 
-            <div className='flex gap-12 p-5'>
-                <div className='flex items-center gap-x-2 p-1 '>
-                    <MeetingSearchFilter />
+            <Button
+                onClick={() => setOpen((value) => !value)}
+                className={cn("sm:hidden", "w-25 h-10")}>
+                {open ? "show Filters" : "hide Filters"}
+            </Button >
+
+            <div className={cn(open && 'hidden', 'sm:block')}>
+
+                <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-3 lg:grid-cols-4">
+
+                    <div className="md:col-span-1">
+                        <MeetingSearchFilter />
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                        <AgentIdFilter />
+                        <StatusFilter />
+                    </div>
+
+                    <div className="md:col-span-1 flex md:justify-end">
+                        <Button
+                            className="w-full md:w-auto"
+                            onClick={() => {
+                                setFilters({
+                                    search: "",
+                                    agentId: "",
+                                    status: undefined,
+                                    page: 1
+                                })
+                            }}
+                        >
+                            Clear Filters
+                        </Button>
+                    </div>
+
                 </div>
-                <div className='flex'>
-                    <AgentIdFilter />
-                    <StatusFilter />
-                </div>
-                <Button onClick={() => {
-                    setFilters({
-                        search: "",
-                        agentId: "",
-                        status: undefined,
-                        page: 1
-                    })
-                }}>
-                    clear filters
-                </Button>
             </div>
         </>
     )
