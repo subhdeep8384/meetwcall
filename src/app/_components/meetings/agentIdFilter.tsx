@@ -13,12 +13,9 @@ export const AgentIdFilter = () => {
     const trpc = useTRPC()
 
 
-    const [agentSearch, setAgentSearch] = useState("")
-    const { data } = useQuery(
-        trpc.agents.getMany.queryOptions({
-            pageSize: 100,
-            search: agentSearch
-        })
+    const [, setAgentSearch] = useState("")
+    const agents = useQuery(
+        trpc.agents.getAll.queryOptions()
     )
     return (
         <>
@@ -28,7 +25,7 @@ export const AgentIdFilter = () => {
                 onSelect={(value) => setFilters({ agentId: value })}
                 onSearch={(value) => setAgentSearch(value)}
                 value={filters.agentId ?? ""}
-                options={(data?.items ?? []).map((agent) => {
+                options={(agents.data ?? []).map((agent) => {
                     return ({
                         id: agent.id,
                         value: agent.id,

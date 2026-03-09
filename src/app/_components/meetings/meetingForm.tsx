@@ -126,7 +126,6 @@ const MeetingForm = ({ onSucess, onCancel, initialValues }: Props) => {
                                     <CommandSelect
                                         options={(agents.data ?? []).map(
                                             (agent) => ({
-
                                                 id: agent.id,
                                                 value: agent.id,
                                                 children: (
