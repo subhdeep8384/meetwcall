@@ -10,6 +10,7 @@ import {
     CommandResponsiveDialog,
     CommandList
 } from "@/components/ui/command"
+import { useMeetingFilter } from "@/hooks/meeting/use-meeting-filter";
 
 
 
@@ -35,6 +36,7 @@ export const MeetingCommandSelect = ({
     placeholder = "Select an option ",
     className
 }: Props) => {
+    const [, setFilters] = useMeetingFilter();
     const [open, setOpen] = useState(false)
     const selectedOption = options.find(option => option.value === value)
 
@@ -63,8 +65,13 @@ export const MeetingCommandSelect = ({
                     placeholder="search..."
                     onValueChange={onSearch}
                 />
-                <Button onClick={() => onSelect("")} variant={"outline"} className='text-sm'>
-                    clear filters
+                <Button onClick={() => setFilters({
+                    search: "",
+                    agentId: "",
+                    status: null,
+                    page: 1
+                })} variant={"outline"} className='text-sm'>
+                    clear filterssssssss
                 </Button>
                 <CommandList>
 

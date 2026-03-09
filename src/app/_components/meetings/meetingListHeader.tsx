@@ -58,7 +58,7 @@ const MeetingListHeader = () => {
                                 setFilters({
                                     search: "",
                                     agentId: "",
-                                    status: undefined,
+                                    status: null,
                                     page: 1
                                 })
                             }}
