@@ -6,6 +6,7 @@ import React from 'react'
 import { columns } from './column';
 import MeetingPagination from '../pagination/meetingPagination';
 import { useMeetingFilter } from '@/hooks/meeting/use-meeting-filter';
+import { redirect } from 'next/navigation';
 
 const MeetingView = () => {
     const [filters, setFilters] = useMeetingFilter()
@@ -13,9 +14,11 @@ const MeetingView = () => {
     const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({
         ...filters
     }))
+
+  
     return (
         <div className='overflow-x-hidden p-4'>
-            <DataTable data={data.items} columns={columns} />
+            <DataTable data={data.items} columns={columns}  onRowClick={(meeting) => redirect(`meetings/${meeting.id}`)} />
             <MeetingPagination
                 page={filters.page}
                 totalPages={data.totalPages}

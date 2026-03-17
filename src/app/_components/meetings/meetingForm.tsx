@@ -46,7 +46,7 @@ const MeetingForm = ({ onSucess, onCancel, initialValues }: Props) => {
                 queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues?.id }))
             }
             onSucess?.(data.id)
-            toast.success("Meeting created successfully")
+            toast.success("Meeting updated successfully")
         },
 
         onError: (e) => {

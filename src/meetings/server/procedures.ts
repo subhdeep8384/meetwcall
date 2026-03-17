@@ -9,7 +9,6 @@ import { meetingsInsertSchema, meetingsUpdateSchema } from "../meetingSchema";
 import { MeetingStatus } from "@/types/type";
 
 
-
 export const meetingsRouter = createTRPCRouter({
 
     update: baseProcedure.use(protectedProcedure).input(meetingsUpdateSchema).mutation(async ({ input, ctx }) => {
@@ -26,6 +25,22 @@ export const meetingsRouter = createTRPCRouter({
         return updatedMeeting;
     }),
 
+    remove: baseProcedure.use(protectedProcedure).input(z.object({
+        id : z.string()
+    })).mutation(async ({ input, ctx }) => {
+        const [removedMeeting] = await db.delete(meetings).where(
+            and(
+                eq(meetings.id, input.id),
+                eq(meetings.userId, ctx.auth.user.id)
+            )
+        ).returning();
+
+        if (!removedMeeting) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "meeting not found" })
+        }
+        return removedMeeting;
+    }),
+
 
     create: baseProcedure.use(protectedProcedure).input(meetingsInsertSchema).mutation(async ({ input, ctx }) => {
         const [createdMeeting] = await db.insert(meetings).values({
@@ -40,11 +55,16 @@ export const meetingsRouter = createTRPCRouter({
     getOne: baseProcedure.use(protectedProcedure).input(z.object({
         id: z.string()
     })).query(async (opts) => {
+        console.log("procedure callled baby")
         const { id } = opts.input
         const [existingMeeting] = await db.select({
             ...getTableColumns(meetings),
+            agentId : agents.id,
+            duration: sql<number>`EXTRACT(EPOCH from (ended_at - started_at))`.as("duration"),
 
-        }).from(meetings).where(
+        }).from(meetings)
+        .innerJoin(agents , eq(meetings.agentId , agents.id))
+        .where(
             and(
                 eq(meetings.id, id),
                 eq(meetings.userId, opts.ctx.auth.user.id)
@@ -54,6 +74,7 @@ export const meetingsRouter = createTRPCRouter({
         if (!existingMeeting) {
             throw new TRPCError({ code: "NOT_FOUND", message: "agent not found" })
         }
+        console.log(existingMeeting)
         return existingMeeting;
     }),
 

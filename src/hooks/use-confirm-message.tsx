@@ -41,7 +41,7 @@ export const useConfirmMessage = ({ title, description }: Props) => {
             description={description}
             onOpenChange={handleClose}
         >
-            <div className="pt-4 w-full flex flex-col-reverse gap-y-2 lg:flex-row gap-x-2 items-center justify-end">
+            <div className="pt-4 w-full flex flex-row gap-y-2 lg:flex-row gap-x-2 items-center justify-end">
                 <Button variant="outline" onClick={handleCancel}>
                     Cancel
                 </Button>
