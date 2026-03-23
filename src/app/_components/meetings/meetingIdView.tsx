@@ -7,17 +7,19 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useConfirmMessage } from '@/hooks/use-confirm-message'
 import UpdateMeetingDialogBox from './updateMeetingDialog'
+import Upcomming from './upcomming/upcomming'
+import Active from './active/active'
 
 interface Props {
-    meetingId : string
+  meetingId: string
 }
 
-const MeetingIdView = ({meetingId} : Props) => {
-  const trpc = useTRPC() ;
+const MeetingIdView = ({ meetingId }: Props) => {
+  const trpc = useTRPC();
   const queryClient = useQueryClient()
-  const {data}  = useSuspenseQuery(
+  const { data } = useSuspenseQuery(
     trpc.meetings.getOne.queryOptions({
-      id : meetingId
+      id: meetingId
     })
   )
   const [ConfirmDialog, confirm] = useConfirmMessage(
@@ -28,41 +30,69 @@ const MeetingIdView = ({meetingId} : Props) => {
   )
   const router = useRouter()
 
- 
+
   const remove = useMutation(
     trpc.meetings.remove.mutationOptions({
-      onSuccess: () =>{
+      onSuccess: () => {
         queryClient.invalidateQueries(
-          trpc.meetings.getMany.queryOptions({}) 
+          trpc.meetings.getMany.queryOptions({})
         );
         router.push("/meetings")
       },
-      onError:(error ) =>{
+      onError: (error) => {
         toast.error(error.message)
       }
 
     })
   )
-  const [updateMeetingDiaolog , setUpdateMeetingDialog] = useState(false)
-  const handleRemove =async () =>{
+  const [updateMeetingDiaolog, setUpdateMeetingDialog] = useState(false)
+  const handleRemove = async () => {
     const ok = await confirm();
-    if (!ok ) return ;
-    await remove.mutate({id : meetingId})
+    if (!ok) return;
+    await remove.mutate({ id: meetingId })
   }
+
+  const isActive = data.status === "active"
+  const isUpcoming = data.status === "upcomming"
+  const isCancelled = data.status === "cancelled"
+  const isCompleted = data.status === "completed"
+  const isProcessing = data.status === "processing"
+
   return (
     <div className='flex-1 py-4 px-4 md:px-8 flex flex-col gap-y-5'>
-      <ConfirmDialog/>
-      <UpdateMeetingDialogBox 
-        open = {updateMeetingDiaolog}
-        onOpenChange = {setUpdateMeetingDialog}
-        initialValues = {data}
+      <ConfirmDialog />
+      <UpdateMeetingDialogBox
+        open={updateMeetingDiaolog}
+        onOpenChange={setUpdateMeetingDialog}
+        initialValues={data}
       />
-      <MeetingIdViewHeader 
-      meetingId={meetingId} 
-      meetingName={data.name} 
+      <MeetingIdViewHeader
+        meetingId={meetingId}
+        meetingName={data.name}
         onEdit={() => setUpdateMeetingDialog(c => !c)}
         onRemove={handleRemove}
       />
+      {isCancelled && 
+        <div>
+            <Active
+            meetingId={meetingId}
+            />
+        </div>
+      }
+      {isProcessing && <div><Active
+        meetingId={meetingId}
+      /></div>}
+      {isCompleted && <div><Active
+        meetingId={meetingId}
+      /></div>}
+      {isUpcoming && <div><Upcomming
+        meetingId={meetingId}
+        onCancelMeeting={() => { }}
+        isCancelling={false}
+      /></div>}
+      {isActive && <div><Active
+        meetingId={meetingId}
+      /></div>}
     </div>
   )
 }
